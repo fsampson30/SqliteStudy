@@ -6,4 +6,5 @@
     <string name="active_customer">Active Customer</string>
     <string name="view_all">VIEW ALL</string>
     <string name="add">ADD</string>
+    <string name="necessary_field">Necessary Field</string>
 </resources>
