@@ -4,7 +4,9 @@
     <string name="customer_name">Customer Name</string>
     <string name="age">Age</string>
     <string name="active_customer">Active Customer</string>
-    <string name="view_all">VIEW ALL</string>
+    <string name="view_all">VIEW</string>
     <string name="add">ADD</string>
     <string name="necessary_field">Necessary Field</string>
+    <string name="delete_all">Delete All</string>
+    <string name="clear">CLEAR</string>
 </resources>
