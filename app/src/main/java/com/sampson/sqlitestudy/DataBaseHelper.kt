@@ -50,9 +50,10 @@ class DataBaseHelper(context: Context) :
         return true
     }
 
-    fun selectAll() : MutableList<Person> {
+    fun selectAll(): MutableList<Person> {
         val db = this.readableDatabase
-        val cursor = db.query(DataBaseContract.StructureBase.TABLE_NAME, null, null, null, null, null, null)
+        val cursor =
+            db.query(DataBaseContract.StructureBase.TABLE_NAME, null, null, null, null, null, null)
         val persons = mutableListOf<Person>()
         with(cursor) {
             while (moveToNext()) {
@@ -60,7 +61,7 @@ class DataBaseHelper(context: Context) :
                 val name = cursor.getString(1)
                 val age = cursor.getInt(2)
                 val active = cursor.getString(3).toBoolean()
-                val currentPerson = Person(id,name, age,active)
+                val currentPerson = Person(id, name, age, active)
                 Log.i(TAG, "Person: ${currentPerson.showInformation()}")
                 Log.i(TAG, "List: ${persons.toString()}")
                 persons.add(currentPerson)
@@ -71,11 +72,19 @@ class DataBaseHelper(context: Context) :
         return persons
     }
 
-
     fun deleteAll() {
         val db = this.writableDatabase
         val deletedRows = db.delete(DataBaseContract.StructureBase.TABLE_NAME, null, null)
         Log.i(TAG, deletedRows.toString())
         db.close()
+    }
+
+    fun deleteOne(id: Int): String {
+        val db = this.writableDatabase
+        val selection = "${BaseColumns._ID} = ?"
+        val args = arrayOf(id.toString())
+        Log.i(TAG, selection)
+        val deleteRows = db.delete(DataBaseContract.StructureBase.TABLE_NAME, selection, args)
+        return if (deleteRows != 0) "Success" else "Failed"
     }
 }

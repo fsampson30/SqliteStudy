@@ -3,16 +3,15 @@ package com.sampson.sqlitestudy
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Switch
-import android.widget.Toast
+import android.view.MotionEvent
+import android.view.View
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     private lateinit var etName: EditText
     private lateinit var etAge: EditText
@@ -66,12 +65,6 @@ class MainActivity : AppCompatActivity() {
             db.deleteAll()
             clearList()
         }
-
-        rvItems.setOnClickListener { position ->
-            adapter.removePerson(position.id)
-            Toast.makeText(this, position.id.toString(), Toast.LENGTH_LONG).show()
-        }
-
     }
 
     private fun captureFields(): Person {
@@ -95,8 +88,9 @@ class MainActivity : AppCompatActivity() {
         rvItems.adapter = adapter
     }
 
-    private fun populateList(persons: MutableList<Person>) {
+    fun populateList(persons: MutableList<Person>) {
         adapter = PersonAdapter(persons)
         rvItems.adapter = adapter
     }
+
 }
