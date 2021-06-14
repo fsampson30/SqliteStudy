@@ -2,6 +2,7 @@ package com.sampson.sqlitestudy
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
@@ -42,14 +43,18 @@ class MainActivity : AppCompatActivity() {
         val db = DataBaseHelper(this)
 
         btnViewAll.setOnClickListener {
-            db.selectAll()
+            val list = db.selectAll()
+            populateList(list)
+            Log.i(TAG, list.toString())
+
         }
 
         btnAdd.setOnClickListener {
             if (validateFields()){
-                adapter.addPerson(captureFields())
+                db.insertPerson(captureFields())
                 clearFields()
-                db.insertPerson(person)
+                val list = db.selectAll()
+                populateList(list)
             } else {
                 etName.error = getString(R.string.necessary_field)
                 etAge.error = getString(R.string.necessary_field)
@@ -59,6 +64,7 @@ class MainActivity : AppCompatActivity() {
 
         btnClear.setOnClickListener{
             db.deleteAll()
+            clearList()
         }
 
         rvItems.setOnClickListener { position ->
@@ -68,19 +74,29 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun captureFields(): Person {
+    private fun captureFields(): Person {
         person = Person(1, etName.text.toString(), etAge.text.toString().toInt(), switch.isChecked)
         return person
     }
 
-    fun clearFields() {
+    private fun clearFields() {
         etName.text.clear()
         etAge.text.clear()
         switch.isChecked = false
         etName.requestFocus()
     }
 
-    fun validateFields(): Boolean{
+    private fun validateFields(): Boolean{
         return !(etName.text.isEmpty() || etAge.text.isEmpty())
+    }
+
+    private fun clearList(){
+        adapter = PersonAdapter(mutableListOf())
+        rvItems.adapter = adapter
+    }
+
+    private fun populateList(persons: MutableList<Person>) {
+        adapter = PersonAdapter(persons)
+        rvItems.adapter = adapter
     }
 }

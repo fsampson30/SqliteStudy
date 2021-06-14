@@ -24,8 +24,6 @@ private const val SQL_DROP_TABLE =
 class DataBaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    val db = this.readableDatabase
-
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(SQL_CREATE_TABLE)
     }
@@ -48,25 +46,36 @@ class DataBaseHelper(context: Context) :
         }
         val newRowId = db.insert(DataBaseContract.StructureBase.TABLE_NAME, null, values)
         Log.i(TAG, newRowId.toString())
+        db.close()
         return true
     }
 
-    fun selectAll() {
-        val cursor =
-            db.query(DataBaseContract.StructureBase.TABLE_NAME, null, null, null, null, null, null)
+    fun selectAll() : MutableList<Person> {
+        val db = this.readableDatabase
+        val cursor = db.query(DataBaseContract.StructureBase.TABLE_NAME, null, null, null, null, null, null)
+        val persons = mutableListOf<Person>()
         with(cursor) {
             while (moveToNext()) {
-                Log.i(TAG, cursor.getString(0))
-                Log.i(TAG, cursor.getString(1))
-                Log.i(TAG, cursor.getString(2))
-                Log.i(TAG, if (cursor.getString(3) == "1") "true" else "false")
+                val id = cursor.getInt(0)
+                val name = cursor.getString(1)
+                val age = cursor.getInt(2)
+                val active = cursor.getString(3).toBoolean()
+                val currentPerson = Person(id,name, age,active)
+                Log.i(TAG, "Person: ${currentPerson.showInformation()}")
+                Log.i(TAG, "List: ${persons.toString()}")
+                persons.add(currentPerson)
             }
         }
+        cursor.close()
+        db.close()
+        return persons
     }
 
 
     fun deleteAll() {
+        val db = this.writableDatabase
         val deletedRows = db.delete(DataBaseContract.StructureBase.TABLE_NAME, null, null)
         Log.i(TAG, deletedRows.toString())
+        db.close()
     }
 }
